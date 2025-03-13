@@ -27,11 +27,14 @@
 import os
 import csv
 import time
-import tracemalloc
+import tracemallocl
+from DataStructures.Map.map_functions import next_prime
 
 
 # TODO Realice la importación del mapa linear probing
+from DataStructures.Map import map_linear_probing as lp
 # TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos
+from DataStructures.List import array_list as al
 # TODO Realice la importación del mapa separate chaining
 
 
