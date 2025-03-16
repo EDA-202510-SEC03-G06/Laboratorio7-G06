@@ -1,5 +1,4 @@
 import math
-
 """
     Funciones auxiliares para el manejo de tablas de simbolos (**mapas**)
 """
@@ -82,3 +81,4 @@ def hash_value(table, key):
 
     value = int((abs(a * h + b) % p) % m)
     return value
+
