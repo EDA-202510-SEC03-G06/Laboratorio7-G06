@@ -27,15 +27,16 @@
 import os
 import csv
 import time
-import tracemallocl
+import tracemalloc
 from DataStructures.Map.map_functions import next_prime
 
 
-# TODO Realice la importación del mapa linear probing
+# TODO Realice la importación del mapa linear probing - HECHO
 from DataStructures.Map import map_linear_probing as lp
-# TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos
+# TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos - HECHO
 from DataStructures.List import array_list as al
-# TODO Realice la importación del mapa separate chaining
+# TODO Realice la importación del mapa separate chaining - HECHO
+from DataStructures.Map import map_separate_chaining as sc
 
 
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/GoodReads/'
@@ -58,20 +59,20 @@ def new_logic():
 
     #Tabla de Hash que contiene los libros indexados por good_reads_book_id  
     #(good_read_id -> book)
-    catalog['books_by_id'] = None #TODO completar la creación del mapa
+    catalog['books_by_id'] = lp.new_map(1000, 0.7) #TODO completar la creación del mapa -HECHO
 
     #Tabla de Hash con la siguiente pareja llave valor: (author_name -> List(books))
-    catalog['books_by_authors'] = None #TODO completar la creación del mapa
+    catalog['books_by_authors'] = lp.new_map(1000, 0.7) #TODO completar la creación del mapa - HECHO
 
     #Tabla de Hash con la siguiente pareja llave valor: (tag_name -> tag)
-    catalog['tags'] = None #TODO completar la creación del mapa
+    catalog['tags'] = lp.new_map(1000, 0.7) #TODO completar la creación del mapa-HECHO
 
     #Tabla de Hash con la siguiente pareja llave valor: (tag_id -> book_tags)
     catalog['book_tags'] = lp.new_map(1000,0.7)
 
     #Tabla de Hash principal que contiene sub-mapas dentro de los valores
     #con la siguiente representación de la pareja llave valor: (author_name -> (original_publication_year -> list(books)))
-    catalog['books_by_year_author'] = None #TODO completar la creación del mapa
+    catalog['books_by_year_author'] = lp.new_map(1000, 0.7) #TODO completar la creación del mapa - HECHO
     
     return catalog
 
@@ -80,15 +81,24 @@ def new_logic():
 #  -------------------------------------------------------------
 
 #TODO: incorporar las funciones para toma de tiempo y memoria
+
 def load_data(catalog):
-    """
-    Carga los datos de los archivos y cargar los datos en la
-    estructura de datos
-    """
+    tracemalloc.start()  
+    start_time = getTime()
+    start_memory = getMemory()
+
     books, authors = load_books(catalog)
     tag_size = load_tags(catalog)
     book_tag_size = load_books_tags(catalog)
-    return books, authors,tag_size,book_tag_size
+
+    stop_time = getTime()
+    stop_memory = getMemory()
+
+    tiempo_transcurrido = deltaTime(stop_time, start_time)
+    memoria_usada = deltaMemory(start_memory, stop_memory)
+
+    return books, authors, tag_size, book_tag_size, tiempo_transcurrido, memoria_usada
+
 
 
 def load_books(catalog):
@@ -116,14 +126,15 @@ def load_tags(catalog):
 
 
 def load_books_tags(catalog):
-    """
-    Carga la información que asocia tags con libros.
-    """
-    bookstagsfile = data_dir +"book_tags.csv"
-    input_file = csv.DictReader(open(bookstagsfile, encoding='utf-8'))
-    for booktag in input_file:
-        add_book_tag(catalog, booktag)
-    return book_tag_size(catalog)
+    bookstagsfile = data_dir + "book_tags.csv"
+    count = 0 
+    with open(bookstagsfile, encoding='utf-8') as file:
+        input_file = csv.DictReader(file)
+        for booktag in input_file:
+            add_book_tag(catalog, booktag)
+            count += 1   
+
+    return count  
 
 
 def new_tag(name, id):
@@ -336,6 +347,9 @@ def getMemory():
     """
     Toma una muestra de la memoria alocada en un instante de tiempo
     """
+    
+    if not tracemalloc.is_tracing():
+        tracemalloc.start()
     return tracemalloc.take_snapshot()
 
 def deltaTime(end, start):
