@@ -26,10 +26,11 @@
 
 import sys
 import App.logic as logic
-# TODO Realice la importación del mapa linear probing - HECHO
+# TODO Realice la importación del mapa linear probing - HECHO 
 from DataStructures.Map import map_linear_probing as lp
 # TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos - HECHO
 from DataStructures.List import array_list as al
+import sys
 
 
 """
@@ -148,9 +149,15 @@ def main():
     # ciclo del menu
     while working:
         print_menu()
-        inputs = input("Seleccione una opción para continuar\n")
+        inputs = input("Seleccione una opción para continuar\n").strip()
+        
+        if not inputs or not inputs[0].isdigit():  # Si la entrada está vacía 
+            print(" Entrada inválida. Intente de nuevo.")
+            continue
         # TODO: agregar tiempo de ejecución y consumo de memoria - HECHO
-        if int(inputs[0]) == 1:
+        opcion = int(inputs)  # Convertir a entero después de verificar
+
+        if opcion == 1: 
             print("Cargando información de los archivos ....")
             bk, at, tg, bktg, tiempo_transcurrido, memoria_usada = load_data(control)
             print('Libros cargados: ' + str(bk))
@@ -160,22 +167,22 @@ def main():
             print(f"\nTiempo transcurrido: {tiempo_transcurrido:.2f} ms")
             print(f"Memoria utilizada: {memoria_usada:.2f} kB\n")
 
-        elif int(inputs[0]) == 2:
+        elif opcion == 2:
             number = input("Ingrese el id del libro (good_read_book_id) que desea buscar: ")
             book = logic.get_book_info_by_book_id(control, number)
             print_book_info(book)
 
-        elif int(inputs[0]) == 3:
+        elif opcion == 3:
             authorname = input("Nombre del autor a buscar: ")
             author, author_book_list = logic.get_books_by_author(control, authorname)
             print_books_by_author(author,author_book_list)
 
-        elif int(inputs[0]) == 4:
+        elif opcion == 4:
             label = input("Etiqueta a buscar: ")
             book_list_by_tag = logic.get_books_by_tag(control, label)
             print_books_by_tag(label, book_list_by_tag)
                  
-        elif int(inputs[0]) == 5:
+        elif opcion == 5:
             author_name = input("Ingrese el nombre del autor que desea buscar:\n")
             pub_year = input("Ingrese la fecha de publicación que desea buscar:\n") 
 
@@ -184,7 +191,7 @@ def main():
             print_books_by_auth_year(author_name, pub_year, books_by_author_pub_year, tiempo_transcurrido, memoria_usada)
 
             
-        elif int(inputs[0]) == 8:
+        elif opcion == 8:
             # confirmar salida del programa
             end_str = "¿Desea salir del programa? (s/n): "
             opt_usr = input(end_str)

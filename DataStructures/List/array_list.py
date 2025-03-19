@@ -35,10 +35,23 @@ def add_first(my_list, element):
 def add_last(my_list, element):
     #Agrega un elemento al final de la lista.
     #Inserta el elemento al final de la lista y aumenta el tamaño de la lista en 1.
+    if 'elements' not in my_list:
+        print("Error: La estructura de datos no tiene 'elements'. Contenido actual:", my_list)
+        raise KeyError("La lista no tiene la clave 'elements'. Verifica su inicialización.")
     
-     my_list['elements'].append(element)
-     my_list['size'] += 1
-     return my_list
+    my_list['elements'].append(element)
+    my_list['size'] += 1
+    return my_list
+
+def delete_element(my_list, index):
+    
+    if index < 0 or index >= my_list['size']:
+        raise IndexError("Índice fuera de rango")
+    
+    del my_list['elements'][index]
+    my_list['size'] -= 1
+
+    return my_list
  
  
 def size(my_list):

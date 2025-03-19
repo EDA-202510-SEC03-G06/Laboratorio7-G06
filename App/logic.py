@@ -36,7 +36,7 @@ from DataStructures.Map import map_linear_probing as lp
 # TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos - HECHO
 from DataStructures.List import array_list as al
 # TODO Realice la importación del mapa separate chaining - HECHO
-from DataStructures.Map import map_separate_chaining as sc
+from DataStructures.Map import map_separate_chaining as sp
 
 
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/GoodReads/'
@@ -214,23 +214,21 @@ def add_book_author_and_year(catalog, author_name, book):
     #TODO Completar manejo de los escenarios donde el año de publicación es vacío.
     author_value = lp.get(books_by_year_author,author_name)
     if author_value:
-        pub_year_value = lp.get(author_value,pub_year)
+        pub_year_value = lp.get(author_value, pub_year)
         if pub_year_value:
-            al.add_last(pub_year_value,book)
-        if not pub_year_value:
-            return -1
+            al.add_last(pub_year_value, book)
         else:
-            books = al.new_list()
-            al.add_last(books, book)
-            pub_year_map = lp.new_map(1000,0.7)
-            lp.put(pub_year_map,pub_year,book)
+            pub_year_value = al.new_list()
+            al.add_last(pub_year_value, book)
+            lp.put(author_value, pub_year, pub_year_value)
     else:
      # TODO Completar escenario donde no se había agregado el autor al mapa principal
-        books = al.new_list()
-        al.add_last(books, book)
-        pub_year_map = lp.new_map(1000,0.7)
-        lp.put(pub_year_map,pub_year,book)
-        lp.put(books_by_year_author,author_name,pub_year_map)
+        pub_year_map = lp.new_map(1000, 0.7)
+        pub_year_value = al.new_list()
+        al.add_last(pub_year_value, book)
+        lp.put(pub_year_map, pub_year, pub_year_value)
+        lp.put(books_by_year_author, author_name, pub_year_map)
+        
     return catalog
 
 
